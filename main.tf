@@ -43,3 +43,149 @@ resource "kubernetes_secret" "main" {
     "ssh_host_rsa_key_public" = var.ssh_host_rsa_key_public
   }
 }
+
+resource "kubernetes_deployment" "main" {
+  metadata {
+    name      = local.resource_name
+    namespace = var.namespace
+  }
+
+  spec {
+    replicas = 1
+
+    selector {
+      match_labels = {
+        app = local.resource_name
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = local.resource_name
+        }
+      }
+
+      spec {
+        volume {
+          name = "motd"
+
+          config_map {
+            name = local.resource_name
+
+            items {
+              key  = "motd"
+              path = "motd"
+            }
+          }
+        }
+
+        volume {
+          name = "authorized_keys"
+
+          config_map {
+            name = local.resource_name
+
+            items {
+              key  = "authorized_keys"
+              path = "authorized_keys"
+            }
+          }
+        }
+
+        volume {
+          name = "sshd_config"
+
+          config_map {
+            name = local.resource_name
+
+            items {
+              key  = "sshd_config"
+              path = "sshd_config"
+            }
+          }
+        }
+
+        volume {
+          name = "ssh_host_rsa_key"
+
+          secret {
+            secret_name = local.resource_name
+
+            items {
+              key  = "ssh_host_rsa_key"
+              path = "ssh_host_rsa_key"
+            }
+          }
+        }
+
+        volume {
+          name = "ssh_host_rsa_key_public"
+
+          secret {
+            secret_name = local.resource_name
+
+            items {
+              key  = "ssh_host_rsa_key_public"
+              path = "ssh_host_rsa_key_public"
+            }
+          }
+        }
+
+        container {
+          name  = local.resource_name
+          image = "${var.image_repository}:${var.image_tag}"
+
+          env {
+            name  = "USER_NAME"
+            value = "user"
+          }
+
+          volume_mount {
+            name       = "motd"
+            mount_path = "/etc/motd"
+            sub_path   = "motd"
+          }
+
+          volume_mount {
+            name       = "authorized_keys"
+            mount_path = "/config/.ssh/authorized_keys"
+            sub_path   = "authorized_keys"
+          }
+
+          volume_mount {
+            name       = "sshd_config"
+            mount_path = "/config/ssh_host_keys/sshd_config"
+            sub_path   = "sshd_config"
+          }
+
+          volume_mount {
+            name       = "ssh_host_rsa_key"
+            mount_path = "/config/ssh_host_keys/ssh_host_rsa_key"
+            sub_path   = "ssh_host_rsa_key"
+          }
+
+          volume_mount {
+            name       = "ssh_host_rsa_key_public"
+            mount_path = "/config/ssh_host_keys/ssh_host_rsa_key_public"
+            sub_path   = "ssh_host_rsa_key_public"
+          }
+        }
+      }
+    }
+
+    strategy {
+      type = "RollingUpdate"
+
+      rolling_update {
+        max_surge       = 0
+        max_unavailable = 1
+      }
+    }
+  }
+
+  depends_on = [
+    kubernetes_config_map.main,
+    kubernetes_secret.main
+  ]
+}
