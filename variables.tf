@@ -1,3 +1,9 @@
+variable "motd_name" {
+  type        = string
+  default     = "jumpserver"
+  description = "Name of the place where the user joined. Defaults to 'jumpserver', so it shows: 'Welcome to jumpserver'"
+}
+
 variable "name" {
   type        = string
   default     = "jumpserver"
