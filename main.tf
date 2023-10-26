@@ -189,3 +189,28 @@ resource "kubernetes_deployment" "main" {
     kubernetes_secret.main
   ]
 }
+
+resource "kubernetes_service" "main" {
+  metadata {
+    name      = local.resource_name
+    namespace = var.namespace
+
+    annotations = var.svc_annotations
+  }
+
+  spec {
+    selector = {
+      app = local.resource_name
+    }
+    port {
+      port        = 22
+      target_port = 2222
+    }
+
+    type = var.svc_type
+  }
+
+  depends_on = [
+    kubernetes_deployment.main
+  ]
+}
