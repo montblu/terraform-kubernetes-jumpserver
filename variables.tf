@@ -6,5 +6,6 @@ variable "name" {
 
 variable "name_prefix" {
   type        = string
-  description = "Prefix of the resource."
+  default     = ""
+  description = "Prefix of the resource. If not specified it won't add a prefix."
 }
