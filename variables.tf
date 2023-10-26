@@ -15,3 +15,8 @@ variable "namespace" {
   default     = "default"
   description = "Namespace where the resource will be deployed. If not specified it will be deployed in 'default' namespace."
 }
+
+variable "ssh_keys" {
+  type        = string
+  description = "List of SSH keys to be added to the authorized keys list."
+}
