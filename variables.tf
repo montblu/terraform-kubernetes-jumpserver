@@ -57,3 +57,9 @@ variable "image_tag" {
   default     = "9.3_p2-r0-ls133"
   description = "Tag of the image used to deploy the jumpserver."
 }
+
+variable "svc_annotations" {
+  type        = map(any)
+  default     = {}
+  description = "Map of annotations for the service."
+}
