@@ -63,3 +63,9 @@ variable "svc_annotations" {
   default     = {}
   description = "Map of annotations for the service."
 }
+
+variable "svc_type" {
+  type        = string
+  default     = "LoadBalancer"
+  description = "Type of LoadBalancer."
+}
