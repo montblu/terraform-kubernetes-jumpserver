@@ -26,3 +26,9 @@ variable "ssh_keys" {
   type        = string
   description = "List of SSH keys to be added to the authorized keys list."
 }
+
+variable "sshd_config" {
+  type        = string
+  default     = ""
+  description = "Configuration file for SSH. If not defined it will use the default."
+}
