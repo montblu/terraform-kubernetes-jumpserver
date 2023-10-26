@@ -29,3 +29,17 @@ resource "kubernetes_config_map" "main" {
     "sshd_config" = var.sshd_config == "" ? local.sshd_config : var.sshd_config
   }
 }
+
+resource "kubernetes_secret" "main" {
+  count = (var.ssh_host_rsa_key != "") && (var.ssh_host_rsa_key_public != "") ? 1 : 0
+
+  metadata {
+    name      = local.resource_name
+    namespace = var.namespace
+  }
+
+  data = {
+    "ssh_host_rsa_key"        = var.ssh_host_rsa_key
+    "ssh_host_rsa_key_public" = var.ssh_host_rsa_key_public
+  }
+}
