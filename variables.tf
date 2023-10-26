@@ -9,3 +9,9 @@ variable "name_prefix" {
   default     = ""
   description = "Prefix of the resource. If not specified it won't add a prefix."
 }
+
+variable "namespace" {
+  type        = string
+  default     = "default"
+  description = "Namespace where the resource will be deployed. If not specified it will be deployed in 'default' namespace."
+}
