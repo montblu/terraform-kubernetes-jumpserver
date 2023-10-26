@@ -46,8 +46,14 @@ variable "ssh_host_rsa_key_public" {
   description = "Public key used by the OpenSSH server. If not defined it will generated automatically, but won't be saved."
 }
 
-variable "image" {
+variable "image_repository" {
   type        = string
   default     = "linuxserver/openssh-server"
-  description = "Image used to deploy the jumpserver"
+  description = "Repository of the image used to deploy the jumpserver."
+}
+
+variable "image_tag" {
+  type        = string
+  default     = "9.3_p2-r0-ls133"
+  description = "Tag of the image used to deploy the jumpserver."
 }
