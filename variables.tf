@@ -54,7 +54,7 @@ variable "ssh_user" {
 variable "ssh_port" {
   type        = number
   default     = 2222
-  description = "Specify the port that OpenSSH server will bind to. The port value can't be below 1024. If not defined it will use '2222' as default"
+  description = "Specify the port that OpenSSH server will bind to. The port value can't be below 1024. If not defined it will use '2222' as default."
 }
 
 variable "image_repository" {
@@ -79,4 +79,10 @@ variable "svc_type" {
   type        = string
   default     = "LoadBalancer"
   description = "Type of LoadBalancer."
+}
+
+variable "svc_port" {
+  type        = number
+  default     = 22
+  description = "Port where the OpenSSH will be exposed. If not defined it will use '22' as default"
 }
