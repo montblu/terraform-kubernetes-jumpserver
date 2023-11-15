@@ -33,7 +33,6 @@ variable "sshd_config" {
   description = "Configuration file for SSH. If not defined it will use the default."
 }
 
-
 variable "ssh_host_rsa_key" {
   type        = string
   default     = ""
@@ -44,6 +43,18 @@ variable "ssh_host_rsa_key_public" {
   type        = string
   default     = ""
   description = "Public key used by the OpenSSH server. If not defined it will generated automatically, but won't be saved."
+}
+
+variable "ssh_user" {
+  type        = string
+  default     = "user"
+  description = "Specify a username to connect to. If not defined it will use 'user' as default."
+}
+
+variable "ssh_port" {
+  type        = number
+  default     = 2222
+  description = "Specify the port that OpenSSH server will bind to. The port value can't be below 1024. If not defined it will use '2222' as default."
 }
 
 variable "image_repository" {
@@ -68,4 +79,10 @@ variable "svc_type" {
   type        = string
   default     = "LoadBalancer"
   description = "Type of LoadBalancer."
+}
+
+variable "svc_port" {
+  type        = number
+  default     = 22
+  description = "Port where the OpenSSH will be exposed. If not defined it will use '22' as default"
 }

@@ -3,6 +3,7 @@ locals {
 
   # Default SSH config
   sshd_config = <<-EOT
+Port ${var.ssh_port}
 AllowTcpForwarding yes
 AuthorizedKeysFile      .ssh/authorized_keys
 ClientAliveCountMax 100
@@ -132,14 +133,56 @@ resource "kubernetes_deployment" "main" {
           }
         }
 
+        volume {
+          name = "config"
+          empty_dir {}
+        }
+
+        init_container {
+          name  = "${local.resource_name}-init"
+          image = "busybox:1.36.1-uclibc"
+
+          command = ["sh", "-c", "cp -r /defaults/. /config && chmod 600 /config/ssh_host_keys/ssh_host_rsa_key"]
+
+          volume_mount {
+            name       = "authorized-keys"
+            mount_path = "/defaults/.ssh/authorized_keys"
+            sub_path   = "authorized_keys"
+          }
+
+          volume_mount {
+            name       = "sshd-config"
+            mount_path = "/defaults/ssh_host_keys/sshd_config"
+            sub_path   = "sshd_config"
+          }
+
+          volume_mount {
+            name       = "ssh-host-rsa-key"
+            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key"
+            sub_path   = "ssh_host_rsa_key"
+          }
+
+          volume_mount {
+            name       = "ssh-host-rsa-key-public"
+            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key_public"
+            sub_path   = "ssh_host_rsa_key_public"
+          }
+
+          volume_mount {
+            name       = "config"
+            mount_path = "/config"
+          }
+        }
+
         container {
           name  = local.resource_name
           image = "${var.image_repository}:${var.image_tag}"
 
           env {
             name  = "USER_NAME"
-            value = "user"
+            value = var.ssh_user
           }
+
 
           volume_mount {
             name       = "motd"
@@ -148,27 +191,8 @@ resource "kubernetes_deployment" "main" {
           }
 
           volume_mount {
-            name       = "authorized-keys"
-            mount_path = "/config/.ssh/authorized_keys"
-            sub_path   = "authorized_keys"
-          }
-
-          volume_mount {
-            name       = "sshd-config"
-            mount_path = "/config/ssh_host_keys/sshd_config"
-            sub_path   = "sshd_config"
-          }
-
-          volume_mount {
-            name       = "ssh-host-rsa-key"
-            mount_path = "/config/ssh_host_keys/ssh_host_rsa_key"
-            sub_path   = "ssh_host_rsa_key"
-          }
-
-          volume_mount {
-            name       = "ssh-host-rsa-key-public"
-            mount_path = "/config/ssh_host_keys/ssh_host_rsa_key_public"
-            sub_path   = "ssh_host_rsa_key_public"
+            name       = "config"
+            mount_path = "/config"
           }
         }
       }
@@ -203,8 +227,8 @@ resource "kubernetes_service" "main" {
       app = local.resource_name
     }
     port {
-      port        = 22
-      target_port = 2222
+      port        = var.svc_port
+      target_port = var.ssh_port
     }
 
     type = var.svc_type
