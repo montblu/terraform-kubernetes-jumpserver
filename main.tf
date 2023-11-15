@@ -194,6 +194,22 @@ resource "kubernetes_deployment" "main" {
             name       = "config"
             mount_path = "/config"
           }
+
+          liveness_probe {
+            tcp_socket {
+              port = var.ssh_port
+            }
+
+            initial_delay_seconds = 30
+          }
+
+          readiness_probe {
+            tcp_socket {
+              port = var.ssh_port
+            }
+
+            initial_delay_seconds = 30
+          }
         }
       }
     }
