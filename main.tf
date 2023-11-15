@@ -227,7 +227,7 @@ resource "kubernetes_service" "main" {
       app = local.resource_name
     }
     port {
-      port        = 22
+      port        = var.svc_port
       target_port = var.ssh_port
     }
 
