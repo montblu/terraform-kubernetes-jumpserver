@@ -3,7 +3,7 @@ locals {
 
   # Default SSH config
   sshd_config = <<-EOT
-Port 2222
+Port ${var.ssh_port}
 AllowTcpForwarding yes
 AuthorizedKeysFile      .ssh/authorized_keys
 ClientAliveCountMax 100
@@ -228,7 +228,7 @@ resource "kubernetes_service" "main" {
     }
     port {
       port        = 22
-      target_port = 2222
+      target_port = var.ssh_port
     }
 
     type = var.svc_type
