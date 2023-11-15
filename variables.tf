@@ -33,7 +33,6 @@ variable "sshd_config" {
   description = "Configuration file for SSH. If not defined it will use the default."
 }
 
-
 variable "ssh_host_rsa_key" {
   type        = string
   default     = ""
@@ -44,6 +43,12 @@ variable "ssh_host_rsa_key_public" {
   type        = string
   default     = ""
   description = "Public key used by the OpenSSH server. If not defined it will generated automatically, but won't be saved."
+}
+
+variable "ssh_user" {
+  type        = string
+  default     = "user"
+  description = "Specify a username to connect to. If not defined it will use 'user' as default."
 }
 
 variable "image_repository" {
