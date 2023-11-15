@@ -81,7 +81,7 @@ resource "kubernetes_deployment" "main" {
         }
 
         volume {
-          name = "authorized_keys"
+          name = "authorized-keys"
 
           config_map {
             name = local.resource_name
@@ -94,7 +94,7 @@ resource "kubernetes_deployment" "main" {
         }
 
         volume {
-          name = "sshd_config"
+          name = "sshd-config"
 
           config_map {
             name = local.resource_name
@@ -107,7 +107,7 @@ resource "kubernetes_deployment" "main" {
         }
 
         volume {
-          name = "ssh_host_rsa_key"
+          name = "ssh-host-rsa-key"
 
           secret {
             secret_name = local.resource_name
@@ -120,7 +120,7 @@ resource "kubernetes_deployment" "main" {
         }
 
         volume {
-          name = "ssh_host_rsa_key_public"
+          name = "ssh-host-rsa-key-public"
 
           secret {
             secret_name = local.resource_name
@@ -148,25 +148,25 @@ resource "kubernetes_deployment" "main" {
           }
 
           volume_mount {
-            name       = "authorized_keys"
+            name       = "authorized-keys"
             mount_path = "/config/.ssh/authorized_keys"
             sub_path   = "authorized_keys"
           }
 
           volume_mount {
-            name       = "sshd_config"
+            name       = "sshd-config"
             mount_path = "/config/ssh_host_keys/sshd_config"
             sub_path   = "sshd_config"
           }
 
           volume_mount {
-            name       = "ssh_host_rsa_key"
+            name       = "ssh-host-rsa-key"
             mount_path = "/config/ssh_host_keys/ssh_host_rsa_key"
             sub_path   = "ssh_host_rsa_key"
           }
 
           volume_mount {
-            name       = "ssh_host_rsa_key_public"
+            name       = "ssh-host-rsa-key-public"
             mount_path = "/config/ssh_host_keys/ssh_host_rsa_key_public"
             sub_path   = "ssh_host_rsa_key_public"
           }
