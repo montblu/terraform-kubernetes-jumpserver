@@ -132,6 +132,12 @@ resource "kubernetes_deployment" "main" {
           }
         }
 
+        volume {
+          name = "configs"
+
+          empty_dir {}
+        }
+
         container {
           name  = local.resource_name
           image = "${var.image_repository}:${var.image_tag}"
