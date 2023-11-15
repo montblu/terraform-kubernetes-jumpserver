@@ -180,7 +180,7 @@ resource "kubernetes_deployment" "main" {
 
           env {
             name  = "USER_NAME"
-            value = "user"
+            value = var.ssh_user
           }
 
 
