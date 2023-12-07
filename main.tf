@@ -26,7 +26,7 @@ resource "kubernetes_config_map" "main" {
 
   data = {
     "authorized_keys" = var.ssh_keys
-    "motd"            = "Welcome to ${var.motd_name}"
+    "motd"            = "Welcome to ${var.motd_name}.\n"
     "sshd_config"     = var.sshd_config == "" ? local.sshd_config : var.sshd_config
   }
 }
