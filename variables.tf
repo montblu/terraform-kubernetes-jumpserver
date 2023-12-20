@@ -78,11 +78,17 @@ variable "svc_annotations" {
 variable "svc_type" {
   type        = string
   default     = "LoadBalancer"
-  description = "Type of LoadBalancer."
+  description = "Type of the Service"
 }
 
 variable "svc_port" {
   type        = number
   default     = 22
   description = "Port where the OpenSSH will be exposed. If not defined it will use '22' as default"
+}
+
+variable "load_balancer_class" {
+  type        = string
+  default     = null
+  description = "The class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix. This field can only be set when the svc_type is LoadBalancer" 
 }
