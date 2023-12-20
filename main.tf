@@ -248,6 +248,7 @@ resource "kubernetes_service" "main" {
     }
 
     type = var.svc_type
+    load_balancer_class = var.load_balancer_class
   }
 
   depends_on = [
