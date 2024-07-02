@@ -65,7 +65,7 @@ variable "image_repository" {
 
 variable "image_tag" {
   type        = string
-  default     = "9.3_p2-r0-ls133"
+  default     = "9.7_p1-r4-ls163"
   description = "Tag of the image used to deploy the jumpserver."
 }
 
