@@ -143,10 +143,14 @@ resource "kubernetes_deployment" "main" {
           image = "${var.image_repository}:${var.image_tag}"
 
           env {
+            name  = "DOCKER_MODS"
+            value = "linuxserver/mods:openssh-server-ssh-tunnel"
+          }
+
+          env {
             name  = "USER_NAME"
             value = var.ssh_user
           }
-
 
           volume_mount {
             name       = "motd"
