@@ -87,9 +87,9 @@ variable "load_balancer_class" {
   description = "The class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix. This field can only be set when the svc_type is LoadBalancer" 
 }
 
-variable "shell_login" {
+variable "shell_no_login" {
   type    = bool 
-  default = false
-  description = "Determines wether it is possible to login via SSH with that user. By default the user is not allowed to shell via SSH."
+  default = true
+  description = "Determines whether it is possible to login into shell when connecting via SSH with the created user. By default the user is not allowed to shell via SSH, to change this behaviour please set this variable to 'false'"
 }
 
