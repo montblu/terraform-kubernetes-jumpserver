@@ -103,41 +103,6 @@ resource "kubernetes_deployment" "main" {
           }
         }
 
-        volume {
-          name = "config"
-          empty_dir {}
-        }
-
-        init_container {
-          name  = "${local.resource_name}-init"
-          image = "busybox:1.36.1-uclibc"
-
-          command = ["sh", "-c", "cp -r /defaults/. /config && chmod 600 /config/ssh_host_keys/ssh_host_rsa_key"]
-
-          volume_mount {
-            name       = "authorized-keys"
-            mount_path = "/defaults/.ssh/authorized_keys"
-            sub_path   = "authorized_keys"
-          }
-
-          volume_mount {
-            name       = "ssh-host-rsa-key"
-            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key"
-            sub_path   = "ssh_host_rsa_key"
-          }
-
-          volume_mount {
-            name       = "ssh-host-rsa-key-public"
-            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key_public"
-            sub_path   = "ssh_host_rsa_key_public"
-          }
-
-          volume_mount {
-            name       = "config"
-            mount_path = "/config"
-          }
-        }
-
         container {
           name  = local.resource_name
           image = "${var.image_repository}:${var.image_tag}"
@@ -161,11 +126,6 @@ resource "kubernetes_deployment" "main" {
             name       = "motd"
             mount_path = "/etc/motd"
             sub_path   = "motd"
-          }
-
-          volume_mount {
-            name       = "config"
-            mount_path = "/config"
           }
 
           liveness_probe {
