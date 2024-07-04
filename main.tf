@@ -134,6 +134,18 @@ resource "kubernetes_deployment" "main" {
           }
 
           volume_mount {
+            name       = "ssh-host-rsa-key"
+            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key"
+            sub_path   = "ssh_host_rsa_key"
+          }
+
+          volume_mount {
+            name       = "ssh-host-rsa-key-public"
+            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key_public"
+            sub_path   = "ssh_host_rsa_key_public"
+          }
+
+          volume_mount {
             name       = "motd"
             mount_path = "/etc/motd"
             sub_path   = "motd"
