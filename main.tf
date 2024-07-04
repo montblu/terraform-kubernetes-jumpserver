@@ -148,6 +148,11 @@ resource "kubernetes_deployment" "main" {
           }
 
           env {
+            name  = "SHELL_NOLOGIN"
+            value = var.shell_no_login
+          }
+
+          env {
             name  = "USER_NAME"
             value = var.ssh_user
           }
