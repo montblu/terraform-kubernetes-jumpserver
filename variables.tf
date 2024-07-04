@@ -27,12 +27,6 @@ variable "ssh_keys" {
   description = "List of SSH keys to be added to the authorized keys list. Should be in the same format as the 'authorized_keys' file, represented in Heredoc style as a multi-line string value."
 }
 
-variable "sshd_config" {
-  type        = string
-  default     = ""
-  description = "Configuration file for SSH. If not defined it will use the default."
-}
-
 variable "ssh_host_rsa_key" {
   type        = string
   default     = ""

@@ -1,21 +1,5 @@
 locals {
   resource_name = var.name_prefix == "" ? var.name : "${var.name_prefix}-${var.name}"
-
-  # Default SSH config
-  sshd_config = <<-EOT
-Port ${var.ssh_port}
-AllowTcpForwarding yes
-AuthorizedKeysFile      .ssh/authorized_keys
-ClientAliveCountMax 100
-ClientAliveInterval 30
-GatewayPorts clientspecified
-PasswordAuthentication no
-PermitTunnel yes
-PidFile /config/sshd.pid
-TCPKeepAlive no
-X11Forwarding no
-HostKey /config/ssh_host_keys/ssh_host_rsa_key
-    EOT
 }
 
 resource "kubernetes_config_map" "main" {
@@ -27,7 +11,6 @@ resource "kubernetes_config_map" "main" {
   data = {
     "authorized_keys" = var.ssh_keys
     "motd"            = "Welcome to ${var.motd_name}.\n"
-    "sshd_config"     = var.sshd_config == "" ? local.sshd_config : var.sshd_config
   }
 }
 
@@ -95,19 +78,6 @@ resource "kubernetes_deployment" "main" {
         }
 
         volume {
-          name = "sshd-config"
-
-          config_map {
-            name = local.resource_name
-
-            items {
-              key  = "sshd_config"
-              path = "sshd_config"
-            }
-          }
-        }
-
-        volume {
           name = "ssh-host-rsa-key"
 
           secret {
@@ -148,12 +118,6 @@ resource "kubernetes_deployment" "main" {
             name       = "authorized-keys"
             mount_path = "/defaults/.ssh/authorized_keys"
             sub_path   = "authorized_keys"
-          }
-
-          volume_mount {
-            name       = "sshd-config"
-            mount_path = "/defaults/ssh_host_keys/sshd_config"
-            sub_path   = "sshd_config"
           }
 
           volume_mount {
