@@ -127,7 +127,7 @@ resource "kubernetes_deployment" "main" {
             value = var.ssh_user
           }
 
-           volume_mount {
+          volume_mount {
             name       = "authorized-keys"
             mount_path = "/defaults/authorized_keys"
             sub_path   = "authorized_keys"
@@ -203,7 +203,7 @@ resource "kubernetes_service" "main" {
       target_port = var.ssh_port
     }
 
-    type = var.svc_type
+    type                = var.svc_type
     load_balancer_class = var.load_balancer_class
   }
 
