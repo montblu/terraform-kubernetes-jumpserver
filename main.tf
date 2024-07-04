@@ -113,6 +113,11 @@ resource "kubernetes_deployment" "main" {
           }
 
           env {
+            name  = "PUBLIC_KEY_FILE"
+            value = "/defaults/authorized_keys"
+          }
+
+          env {
             name  = "SHELL_NOLOGIN"
             value = var.shell_no_login
           }
@@ -120,6 +125,12 @@ resource "kubernetes_deployment" "main" {
           env {
             name  = "USER_NAME"
             value = var.ssh_user
+          }
+
+           volume_mount {
+            name       = "authorized-keys"
+            mount_path = "/defaults/authorized_keys"
+            sub_path   = "authorized_keys"
           }
 
           volume_mount {
