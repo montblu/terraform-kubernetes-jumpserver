@@ -1,21 +1,5 @@
 locals {
   resource_name = var.name_prefix == "" ? var.name : "${var.name_prefix}-${var.name}"
-
-  # Default SSH config
-  sshd_config = <<-EOT
-Port ${var.ssh_port}
-AllowTcpForwarding yes
-AuthorizedKeysFile      .ssh/authorized_keys
-ClientAliveCountMax 100
-ClientAliveInterval 30
-GatewayPorts clientspecified
-PasswordAuthentication no
-PermitTunnel yes
-PidFile /config/sshd.pid
-TCPKeepAlive no
-X11Forwarding no
-HostKey /config/ssh_host_keys/ssh_host_rsa_key
-    EOT
 }
 
 resource "kubernetes_config_map" "main" {
@@ -27,7 +11,12 @@ resource "kubernetes_config_map" "main" {
   data = {
     "authorized_keys" = var.ssh_keys
     "motd"            = "Welcome to ${var.motd_name}.\n"
-    "sshd_config"     = var.sshd_config == "" ? local.sshd_config : var.sshd_config
+    "delete-generated-ssh-keys"            = <<EOT
+#!/bin/bash
+echo "**** remove not needed ecdsa and ed25519 keys ****"
+rm /config/ssh_host_keys/ssh_host_ecdsa*
+rm /config/ssh_host_keys/ssh_host_ed25519*
+EOT
   }
 }
 
@@ -95,14 +84,14 @@ resource "kubernetes_deployment" "main" {
         }
 
         volume {
-          name = "sshd-config"
+          name = "delete-generated-ssh-keys"
 
           config_map {
             name = local.resource_name
 
             items {
-              key  = "sshd_config"
-              path = "sshd_config"
+              key  = "delete-generated-ssh-keys"
+              path = "delete-generated-ssh-keys"
             }
           }
         }
@@ -133,56 +122,55 @@ resource "kubernetes_deployment" "main" {
           }
         }
 
-        volume {
-          name = "config"
-          empty_dir {}
-        }
-
-        init_container {
-          name  = "${local.resource_name}-init"
-          image = "busybox:1.36.1-uclibc"
-
-          command = ["sh", "-c", "cp -r /defaults/. /config && chmod 600 /config/ssh_host_keys/ssh_host_rsa_key"]
-
-          volume_mount {
-            name       = "authorized-keys"
-            mount_path = "/defaults/.ssh/authorized_keys"
-            sub_path   = "authorized_keys"
-          }
-
-          volume_mount {
-            name       = "sshd-config"
-            mount_path = "/defaults/ssh_host_keys/sshd_config"
-            sub_path   = "sshd_config"
-          }
-
-          volume_mount {
-            name       = "ssh-host-rsa-key"
-            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key"
-            sub_path   = "ssh_host_rsa_key"
-          }
-
-          volume_mount {
-            name       = "ssh-host-rsa-key-public"
-            mount_path = "/defaults/ssh_host_keys/ssh_host_rsa_key_public"
-            sub_path   = "ssh_host_rsa_key_public"
-          }
-
-          volume_mount {
-            name       = "config"
-            mount_path = "/config"
-          }
-        }
-
         container {
           name  = local.resource_name
           image = "${var.image_repository}:${var.image_tag}"
+
+          env {
+            # Ref: https://github.com/linuxserver/docker-mods/tree/openssh-server-ssh-tunnel
+            name  = "DOCKER_MODS"
+            value = "linuxserver/mods:openssh-server-ssh-tunnel"
+          }
+
+          env {
+            name  = "PUBLIC_KEY_FILE"
+            value = "/defaults/authorized_keys"
+          }
+
+          env {
+            name  = "SHELL_NOLOGIN"
+            value = var.shell_no_login
+          }
 
           env {
             name  = "USER_NAME"
             value = var.ssh_user
           }
 
+          volume_mount {
+            name       = "authorized-keys"
+            mount_path = "/defaults/authorized_keys"
+            sub_path   = "authorized_keys"
+          }
+
+          volume_mount {
+            name       = "delete-generated-ssh-keys"
+            mount_path = "/custom-cont-init.d/delete-generated-ssh-keys"
+            sub_path   = "delete-generated-ssh-keys"
+            read_only = true
+          }
+
+          volume_mount {
+            name       = "ssh-host-rsa-key"
+            mount_path = "/config/ssh_host_keys/ssh_host_rsa_key"
+            sub_path   = "ssh_host_rsa_key"
+          }
+
+          volume_mount {
+            name       = "ssh-host-rsa-key-public"
+            mount_path = "/config/ssh_host_keys/ssh_host_rsa_key_public"
+            sub_path   = "ssh_host_rsa_key_public"
+          }
 
           volume_mount {
             name       = "motd"
@@ -190,25 +178,16 @@ resource "kubernetes_deployment" "main" {
             sub_path   = "motd"
           }
 
-          volume_mount {
-            name       = "config"
-            mount_path = "/config"
-          }
-
           liveness_probe {
             tcp_socket {
               port = var.ssh_port
             }
-
-            initial_delay_seconds = 30
           }
 
           readiness_probe {
             tcp_socket {
               port = var.ssh_port
             }
-
-            initial_delay_seconds = 30
           }
         }
       }
@@ -247,7 +226,7 @@ resource "kubernetes_service" "main" {
       target_port = var.ssh_port
     }
 
-    type = var.svc_type
+    type                = var.svc_type
     load_balancer_class = var.load_balancer_class
   }
 
