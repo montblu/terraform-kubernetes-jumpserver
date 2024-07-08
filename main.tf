@@ -11,6 +11,12 @@ resource "kubernetes_config_map" "main" {
   data = {
     "authorized_keys" = var.ssh_keys
     "motd"            = "Welcome to ${var.motd_name}.\n"
+    "delete-generated-ssh-keys"            = <<EOT
+#!/bin/bash
+echo "**** remove not needed ecdsa and ed25519 keys ****"
+rm /config/ssh_host_keys/ssh_host_ecdsa*
+rm /config/ssh_host_keys/ssh_host_ed25519*
+EOT
   }
 }
 
@@ -78,6 +84,19 @@ resource "kubernetes_deployment" "main" {
         }
 
         volume {
+          name = "delete-generated-ssh-keys"
+
+          config_map {
+            name = local.resource_name
+
+            items {
+              key  = "delete-generated-ssh-keys"
+              path = "delete-generated-ssh-keys"
+            }
+          }
+        }
+
+        volume {
           name = "ssh-host-rsa-key"
 
           secret {
@@ -131,6 +150,13 @@ resource "kubernetes_deployment" "main" {
             name       = "authorized-keys"
             mount_path = "/defaults/authorized_keys"
             sub_path   = "authorized_keys"
+          }
+
+          volume_mount {
+            name       = "delete-generated-ssh-keys"
+            mount_path = "/custom-cont-init.d/delete-generated-ssh-keys"
+            sub_path   = "delete-generated-ssh-keys"
+            read_only = true
           }
 
           volume_mount {
