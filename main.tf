@@ -127,6 +127,7 @@ resource "kubernetes_deployment" "main" {
           image = "${var.image_repository}:${var.image_tag}"
 
           env {
+            # Ref: https://github.com/linuxserver/docker-mods/tree/openssh-server-ssh-tunnel
             name  = "DOCKER_MODS"
             value = "linuxserver/mods:openssh-server-ssh-tunnel"
           }
