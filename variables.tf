@@ -51,6 +51,12 @@ variable "ssh_port" {
   description = "Specify the port that OpenSSH server will bind to. The port value can't be below 1024. If not defined it will use '2222' as default."
 }
 
+variable "ssh_log_to_stdout" {
+  type        = bool
+  default     = false
+  description = "If set to true it will log the SSH connection to stdout."
+}
+
 variable "image_repository" {
   type        = string
   default     = "linuxserver/openssh-server"
