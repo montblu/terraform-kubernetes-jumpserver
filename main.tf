@@ -132,6 +132,14 @@ resource "kubernetes_deployment" "main" {
             value = "linuxserver/mods:openssh-server-ssh-tunnel${var.ssh_log_to_stdout ? "|linuxserver/mods:universal-stdout-logs" : ""}"
           }
 
+          dynamic "env" {
+            for_each = var.ssh_log_to_stdout ? ["dummy"] : []
+            content {
+              name  = "LOGS_TO_STDOUT"
+              value = "/config/logs/openssh/current" # OpenSSH logs
+            }
+          }
+
           env {
             name  = "PUBLIC_KEY_FILE"
             value = "/defaults/authorized_keys"
