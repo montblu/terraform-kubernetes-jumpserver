@@ -210,6 +210,8 @@ resource "kubernetes_deployment" "main" {
 }
 
 resource "kubernetes_service" "main" {
+  count = var.svc_create ? 1 : 0
+
   metadata {
     name      = local.resource_name
     namespace = var.namespace

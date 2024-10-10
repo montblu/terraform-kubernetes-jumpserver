@@ -63,6 +63,12 @@ variable "image_tag" {
   description = "Tag of the image used to deploy the jumpserver."
 }
 
+variable "svc_create" {
+  type        = bool
+  default     = true
+  description = "If set to true it will create the service."
+}
+
 variable "svc_annotations" {
   type        = map(any)
   default     = {}
