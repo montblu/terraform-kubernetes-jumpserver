@@ -69,6 +69,12 @@ variable "image_tag" {
   description = "Tag of the image used to deploy the jumpserver."
 }
 
+variable "svc_create" {
+  type        = bool
+  default     = true
+  description = "If set to true it will create the service."
+}
+
 variable "svc_annotations" {
   type        = map(any)
   default     = {}
@@ -90,5 +96,5 @@ variable "svc_port" {
 variable "load_balancer_class" {
   type        = string
   default     = null
-  description = "The class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix. This field can only be set when the svc_type is LoadBalancer" 
+  description = "The class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix. This field can only be set when the svc_type is LoadBalancer"
 }
