@@ -27,12 +27,6 @@ variable "ssh_keys" {
   description = "List of SSH keys to be added to the authorized keys list. Should be in the same format as the 'authorized_keys' file, represented in Heredoc style as a multi-line string value."
 }
 
-variable "sshd_config" {
-  type        = string
-  default     = ""
-  description = "Configuration file for SSH. If not defined it will use the default."
-}
-
 variable "ssh_host_rsa_key" {
   type        = string
   default     = ""
@@ -104,3 +98,10 @@ variable "load_balancer_class" {
   default     = null
   description = "The class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix. This field can only be set when the svc_type is LoadBalancer"
 }
+
+variable "shell_no_login" {
+  type        = bool
+  default     = true
+  description = "Determines whether it is possible to login into shell when connecting via SSH with the created user. By default the user is not allowed to shell via SSH, to change this behaviour please set this variable to 'false'"
+}
+
