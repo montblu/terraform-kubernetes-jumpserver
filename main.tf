@@ -231,6 +231,8 @@ resource "kubernetes_deployment" "main" {
 }
 
 resource "kubernetes_service" "main" {
+  count = var.svc_create ? 1 : 0
+
   metadata {
     name      = local.resource_name
     namespace = var.namespace
@@ -247,7 +249,7 @@ resource "kubernetes_service" "main" {
       target_port = var.ssh_port
     }
 
-    type = var.svc_type
+    type                = var.svc_type
     load_balancer_class = var.load_balancer_class
   }
 
