@@ -233,7 +233,7 @@ resource "kubernetes_service" "main" {
 
   spec {
     selector = {
-      app = local.resource_name
+      type = "jumpserver"
     }
     port {
       port        = var.svc_port
