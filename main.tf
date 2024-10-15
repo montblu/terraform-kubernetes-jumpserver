@@ -130,6 +130,11 @@ resource "kubernetes_deployment" "main" {
           name  = local.resource_name
           image = "${var.image_repository}:${var.image_tag}"
 
+          port {
+            name           = local.resource_name
+            container_port = 2222
+          }
+
           env {
             # Ref: https://github.com/linuxserver/docker-mods/tree/openssh-server-ssh-tunnel
             name  = "DOCKER_MODS"
