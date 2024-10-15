@@ -38,6 +38,9 @@ resource "kubernetes_deployment" "main" {
   metadata {
     name      = local.resource_name
     namespace = var.namespace
+    labels = {
+      app = local.resource_name
+    }
   }
 
   spec {
@@ -45,14 +48,15 @@ resource "kubernetes_deployment" "main" {
 
     selector {
       match_labels = {
-        app = local.resource_name
+        type = "jumpserver"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = local.resource_name
+          app  = local.resource_name
+          type = "jumpserver"
         }
       }
 
@@ -229,7 +233,7 @@ resource "kubernetes_service" "main" {
 
   spec {
     selector = {
-      app = local.resource_name
+      type = "jumpserver"
     }
     port {
       port        = var.svc_port
