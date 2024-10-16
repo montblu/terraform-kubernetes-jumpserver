@@ -1,3 +1,20 @@
+# terraform-kubernetes-jumpserver
+
+## How to generate ssh keys
+
+We need to generate a ssh key pair for the jumpserver to use. You can do this by running the following command:
+
+```bash
+ssh-keygen -t ed25519 -C "<name-of-the-jumpserver>" -f <name-of-the-jumpserver>
+```
+
+After that you will have a `<name-of-the-jumpserver>` file with the private key and a `<name-of-the-jumpserver>.pub` file with the public key.
+
+```hcl
+ssh_host_rsa_key        = <content-of-the-jumpserver-file>
+ssh_host_rsa_key_public = <content-of-the-jumpserver-file.pub>
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
