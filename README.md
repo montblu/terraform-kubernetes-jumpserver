@@ -64,5 +64,7 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_port_name"></a> [port\_name](#output\_port\_name) | Name of the port of the container |
 <!-- END_TF_DOCS -->

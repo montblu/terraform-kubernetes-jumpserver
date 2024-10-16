@@ -1,5 +1,6 @@
 locals {
   resource_name = var.name_prefix == "" ? var.name : "${var.name_prefix}-${var.name}"
+  port_name     = substr("${var.name}-port", 0, 14) # must be no more than 15 characters
 }
 
 resource "kubernetes_config_map" "main" {
@@ -130,6 +131,11 @@ resource "kubernetes_deployment" "main" {
           name  = local.resource_name
           image = "${var.image_repository}:${var.image_tag}"
 
+          port {
+            name           = local.port_name
+            container_port = 2222
+          }
+
           env {
             # Ref: https://github.com/linuxserver/docker-mods/tree/openssh-server-ssh-tunnel
             name  = "DOCKER_MODS"
@@ -235,9 +241,11 @@ resource "kubernetes_service" "main" {
     selector = {
       type = "jumpserver"
     }
+
     port {
+      name        = "${local.resource_name}-port"
       port        = var.svc_port
-      target_port = var.ssh_port
+      target_port = "2222"
     }
 
     type                = var.svc_type
