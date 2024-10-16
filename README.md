@@ -33,13 +33,13 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | Name of the resource. Defaults to 'jumpserver' | `string` | `"jumpserver"` | no |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix of the resource. If not specified it won't add a prefix. | `string` | `""` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace where the resource will be deployed. If not specified it will be deployed in 'default' namespace. | `string` | `"default"` | no |
+| <a name="input_shell_no_login"></a> [shell\_no\_login](#input\_shell\_no\_login) | Determines whether it is possible to login into shell when connecting via SSH with the created user. By default the user is not allowed to shell via SSH, to change this behaviour please set this variable to 'false' | `bool` | `true` | no |
 | <a name="input_ssh_host_rsa_key"></a> [ssh\_host\_rsa\_key](#input\_ssh\_host\_rsa\_key) | Private key used by the OpenSSH server. If not defined it will generated automatically, but won't be saved. | `string` | `""` | no |
 | <a name="input_ssh_host_rsa_key_public"></a> [ssh\_host\_rsa\_key\_public](#input\_ssh\_host\_rsa\_key\_public) | Public key used by the OpenSSH server. If not defined it will generated automatically, but won't be saved. | `string` | `""` | no |
 | <a name="input_ssh_keys"></a> [ssh\_keys](#input\_ssh\_keys) | List of SSH keys to be added to the authorized keys list. Should be in the same format as the 'authorized\_keys' file, represented in Heredoc style as a multi-line string value. | `string` | n/a | yes |
-| <a name="input_ssh_log_to_stdout"></a> [ssh\_log\_to\_stdout](#input\_ssh\_log\_to\_stdout) | If set to true it will log the SSH connection to stdout. | `bool` | `false` | no |
+| <a name="input_ssh_log_to_stdout"></a> [ssh\_log\_to\_stdout](#input\_ssh\_log\_to\_stdout) | If set to true it will log the SSH connection to stdout. | `bool` | `true` | no |
 | <a name="input_ssh_port"></a> [ssh\_port](#input\_ssh\_port) | Specify the port that OpenSSH server will bind to. The port value can't be below 1024. If not defined it will use '2222' as default. | `number` | `2222` | no |
 | <a name="input_ssh_user"></a> [ssh\_user](#input\_ssh\_user) | Specify a username to connect to. If not defined it will use 'user' as default. | `string` | `"user"` | no |
-| <a name="input_sshd_config"></a> [sshd\_config](#input\_sshd\_config) | Configuration file for SSH. If not defined it will use the default. | `string` | `""` | no |
 | <a name="input_svc_annotations"></a> [svc\_annotations](#input\_svc\_annotations) | Map of annotations for the service. | `map(any)` | `{}` | no |
 | <a name="input_svc_create"></a> [svc\_create](#input\_svc\_create) | If set to true it will create the service. | `bool` | `true` | no |
 | <a name="input_svc_port"></a> [svc\_port](#input\_svc\_port) | Port where the OpenSSH will be exposed. If not defined it will use '22' as default | `number` | `22` | no |
