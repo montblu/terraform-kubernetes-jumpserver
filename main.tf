@@ -131,7 +131,7 @@ resource "kubernetes_deployment" "main" {
           image = "${var.image_repository}:${var.image_tag}"
 
           port {
-            name           = "${local.resource_name}-port"
+            name           = substr("${var.name}-port", 0, 14)
             container_port = 2222
           }
 
