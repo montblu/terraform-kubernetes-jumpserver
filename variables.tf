@@ -53,7 +53,7 @@ variable "ssh_port" {
 
 variable "ssh_log_to_stdout" {
   type        = bool
-  default     = false
+  default     = true
   description = "If set to true it will log the SSH connection to stdout."
 }
 
@@ -104,4 +104,3 @@ variable "shell_no_login" {
   default     = true
   description = "Determines whether it is possible to login into shell when connecting via SSH with the created user. By default the user is not allowed to shell via SSH, to change this behaviour please set this variable to 'false'"
 }
-
