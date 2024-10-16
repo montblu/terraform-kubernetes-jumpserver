@@ -131,7 +131,7 @@ resource "kubernetes_deployment" "main" {
           image = "${var.image_repository}:${var.image_tag}"
 
           port {
-            name           = local.resource_name
+            name           = "${local.resource_name}-port"
             container_port = 2222
           }
 
@@ -240,9 +240,11 @@ resource "kubernetes_service" "main" {
     selector = {
       type = "jumpserver"
     }
+
     port {
+      name        = "${local.resource_name}-port"
       port        = var.svc_port
-      target_port = var.ssh_port
+      target_port = "2222"
     }
 
     type                = var.svc_type
