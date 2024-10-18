@@ -95,7 +95,7 @@ variable "svc_port" {
 
 variable "load_balancer_class" {
   type        = string
-  default     = null
+  default     = "service.k8s.aws/nlb"
   description = "The class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix. This field can only be set when the svc_type is LoadBalancer"
 }
 
