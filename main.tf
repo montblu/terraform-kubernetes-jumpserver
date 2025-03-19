@@ -18,6 +18,9 @@ echo "**** remove not needed ecdsa and ed25519 keys ****"
 rm /config/ssh_host_keys/ssh_host_ecdsa*
 rm /config/ssh_host_keys/ssh_host_ed25519*
 EOT
+    "mac_algorithms.conf"       = <<EOT
+MACs umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512
+EOT
   }
 }
 
@@ -127,6 +130,19 @@ resource "kubernetes_deployment" "main" {
           }
         }
 
+        volume {
+          name = "mac-algorithms-conf"
+
+          config_map {
+            name = local.resource_name
+
+            items {
+              key  = "mac_algorithms.conf"
+              path = "mac_algorithms.conf"
+            }
+          }
+        }
+
         container {
           name  = local.resource_name
           image = "${var.image_repository}:${var.image_tag}"
@@ -194,6 +210,12 @@ resource "kubernetes_deployment" "main" {
             name       = "motd"
             mount_path = "/etc/motd"
             sub_path   = "motd"
+          }
+
+          volume_mount {
+            name       = "mac-algorithms-conf"
+            mount_path = "/config/sshd/sshd_config.d/mac_algorithms.conf"
+            sub_path   = "mac_algorithms.conf"
           }
 
           liveness_probe {
