@@ -230,6 +230,14 @@ resource "kubernetes_deployment" "main" {
             }
           }
         }
+        dynamic "host_aliases" {
+          for_each = var.host_aliases
+
+          content {
+            ip        = host_aliases.value.ip
+            hostnames = host_aliases.value.hostnames
+          }
+        }
       }
     }
 
