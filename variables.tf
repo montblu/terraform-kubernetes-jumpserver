@@ -104,3 +104,12 @@ variable "shell_no_login" {
   default     = true
   description = "Determines whether it is possible to login into shell when connecting via SSH with the created user. By default the user is not allowed to shell via SSH, to change this behaviour please set this variable to 'false'"
 }
+
+variable "host_aliases" {
+  type = list(object({
+    ip        = optional(string, "")
+    hostnames = optional(list(string), [])
+  }))
+  default     = []
+  description = "List of hosts and IPs that will be injected into the pod's hosts file."
+}
