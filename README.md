@@ -47,7 +47,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_host_aliases"></a> [host\_aliases](#input\_host\_aliases) | List of hosts and IPs that will be injected into the pod's hosts file. | <pre>list(object({<br>    ip        = optional(string, "")<br>    hostnames = optional(list(string), [])<br>  }))</pre> | `[]` | no |
+| <a name="input_host_aliases"></a> [host\_aliases](#input\_host\_aliases) | List of hosts and IPs that will be injected into the pod's hosts file. | <pre>list(object({<br>    ip        = string<br>    hostnames = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_image_repository"></a> [image\_repository](#input\_image\_repository) | Repository of the image used to deploy the jumpserver. | `string` | `"linuxserver/openssh-server"` | no |
 | <a name="input_image_tag"></a> [image\_tag](#input\_image\_tag) | Tag of the image used to deploy the jumpserver. | `string` | `"9.7_p1-r4-ls163"` | no |
 | <a name="input_load_balancer_class"></a> [load\_balancer\_class](#input\_load\_balancer\_class) | The class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix. This field can only be set when the svc\_type is LoadBalancer | `string` | `"service.k8s.aws/nlb"` | no |
