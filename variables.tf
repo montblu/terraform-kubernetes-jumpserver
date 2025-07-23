@@ -107,8 +107,8 @@ variable "shell_no_login" {
 
 variable "host_aliases" {
   type = list(object({
-    ip        = optional(string, "")
-    hostnames = optional(list(string), [])
+    ip        = string
+    hostnames = list(string)
   }))
   default     = []
   description = "List of hosts and IPs that will be injected into the pod's hosts file."
