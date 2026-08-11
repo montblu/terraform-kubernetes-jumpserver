@@ -3,7 +3,7 @@ locals {
   port_name     = substr("${var.name}-port", 0, 14) # must be no more than 15 characters
 }
 
-resource "kubernetes_config_map" "main" {
+resource "kubernetes_config_map_v1" "main" {
   metadata {
     name      = local.resource_name
     namespace = var.namespace
@@ -24,7 +24,7 @@ EOT
   }
 }
 
-resource "kubernetes_secret" "main" {
+resource "kubernetes_secret_v1" "main" {
   count = (var.ssh_host_rsa_key != "") && (var.ssh_host_rsa_key_public != "") ? 1 : 0
 
   metadata {
@@ -38,7 +38,7 @@ resource "kubernetes_secret" "main" {
   }
 }
 
-resource "kubernetes_deployment" "main" {
+resource "kubernetes_deployment_v1" "main" {
   metadata {
     name      = local.resource_name
     namespace = var.namespace
@@ -252,12 +252,12 @@ resource "kubernetes_deployment" "main" {
   }
 
   depends_on = [
-    kubernetes_config_map.main,
-    kubernetes_secret.main
+    kubernetes_config_map_v1.main,
+    kubernetes_secret_v1.main
   ]
 }
 
-resource "kubernetes_service" "main" {
+resource "kubernetes_service_v1" "main" {
   count = var.svc_create ? 1 : 0
 
   metadata {
@@ -282,7 +282,17 @@ resource "kubernetes_service" "main" {
     load_balancer_class = var.load_balancer_class
   }
 
+  # The cloud load balancer controller writes its own annotations onto the service.
+  # Without this every plan tries to strip them again and never settles.
+  # GKE's L4 controller adds networking.gke.io/target-pool; on other clouds the key is
+  # simply absent, so ignoring it is a no-op.
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["networking.gke.io/target-pool"]
+    ]
+  }
+
   depends_on = [
-    kubernetes_deployment.main
+    kubernetes_deployment_v1.main
   ]
 }
